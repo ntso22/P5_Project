@@ -32,7 +32,7 @@ municipalities <- panel_data %>%
 for (municipality in municipalities$KommuneNavn) {
     years <- nrow(subset(panel_data, KommuneNavn == municipality))
     if (years < 12) {
-        panel_data <- panel_data %>% subset(KommuneNavn != municipality)
+        panel_data <- panel_data %>% subset(KommuneNavn != municipality) %>% subset(Salgsaar != 2010)
     }
 }
 
