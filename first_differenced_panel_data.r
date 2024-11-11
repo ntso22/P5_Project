@@ -7,6 +7,3 @@ panel_data %>%
     arrange(KommuneNavn) %>%
     subset(Salgsaar != 2011) %>%
     write.csv("first_differenced_panel_data.csv")
-
-
-# diff = Areal_Bolig - lag(Areal_Bolig)
