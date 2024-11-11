@@ -24,4 +24,4 @@ panel_data <- homedata %>%
     group_by(KommuneNavn, Salgsaar) %>%
     summarise(Areal_Bolig = mean(Areal_Bolig), Salgstid = mean(Salgstid), Pris_Salg = mean(Pris_Salg), Areal_Grund = mean(Areal_Grund), StorGrund = mean(StorGrund), Dist_skole = mean(Dist_skole), Dist_raadhus = mean(Dist_raadhus), Alder = mean(Alder), AntalFremvisninger = mean(AntalFremvisninger), Areal_GarageCarport = mean(Areal_GarageCarport), Ejd_AntalPlan = mean(Ejd_AntalPlan))
 
-panel_data
+write.csv(panel_data, "panel_data.csv")
