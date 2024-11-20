@@ -15,10 +15,7 @@ main <- function() {
     m <- nrow(data)
     alpha <- .05
     k <- 0
-    harmonic <- 0
-    for (l in 1:m) {
-        harmonic <- harmonic + 1/l
-    }
+    harmonic <- sum(1 / (1:m))
     for (i in 1:m) {
         alpha_i <- i * alpha / (m * harmonic)
         if (data$p_value[i] <= alpha_i) {
