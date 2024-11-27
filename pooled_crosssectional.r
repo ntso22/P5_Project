@@ -68,7 +68,7 @@ main <- function() {
     }
     DataSet <- DataSet[-(1:k),] # Observations corresponding to rejected hypotheses are removed from the data set
 
-    write.csv(DataSet, 'clean_data.csv')
+    write.csv(DataSet, 'clean_data2.csv')
 
     # The model is constructed from the data not containing outliers
     model <- lm(formula = Pris_Salg ~ Salgsaar +  KommuneNavn + 
@@ -85,7 +85,7 @@ main <- function() {
     
     summary <- summary(model)
 
-    write.csv(summary$coefficients, 'linear_model_1.csv')
+    write.csv(summary$coefficients, 'linear_model_2.csv')
     return (summary)
 }
 
