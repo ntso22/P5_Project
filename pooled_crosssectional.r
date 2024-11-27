@@ -47,7 +47,13 @@ main <- function() {
 
     summary <- summary(model)
 
-    DataSet <- DataSet %>% mutate(p_value = 2 * (1 - pnorm(abs(model$residuals / summary$sigma)))) %>%
+    H_diag <- influence(model)$hat
+
+    print(head(H_diag))
+
+    #Standardising residuals and adding to data frame
+    p_values <- 2 * (1 - pnorm(abs(model$residuals / (summary$sigma * sqrt(1 - H_diag))))) # Remember the definition of standardised residuals
+    DataSet <- DataSet %>% mutate(p_value = p_values) %>%
         arrange(p_value)
    
     m <- nrow(DataSet)
