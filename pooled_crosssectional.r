@@ -26,14 +26,13 @@ main <- function() {
         "København"
     )
 
-    # Cleaning data and treating Salgsaar as a qualitative variable
+    # Cleaning data and treating Salgsaar as a qualitative variable, removing outliers using multiple hypothesis test
     DataSet <- homedata %>%
         select(vars) %>%
         na.omit() %>%
-        mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
+        mutate(Salgsaar = as.character(Salgsaar)) %>%
         subset(KommuneNavn %in% cities)
 
-    # Possibly need to combine Salgsaar and KommuneNavn as well
     model <- lm(formula = Pris_Salg ~ Salgsaar +  KommuneNavn + 
         Areal_Bolig + Salgsaar * Areal_Bolig + KommuneNavn * Areal_Bolig + 
         Areal_Grund + Salgsaar * Areal_Grund + KommuneNavn * Areal_Grund +
@@ -50,7 +49,7 @@ main <- function() {
 
     DataSet <- DataSet %>% mutate(p_value = 2 * (1 - pnorm(abs(model$residuals / summary$sigma)))) %>%
         arrange(p_value)
-    # Benjamini-Yekutieli procedure
+   
     m <- nrow(DataSet)
     alpha <- .05
     k <- 0
@@ -61,13 +60,27 @@ main <- function() {
             k <- i
         }
     }
-    DataSet <- DataSet[-(1:k),]
-    print(k)
+    DataSet <- DataSet[-(1:k),] # Observations corresponding to rejected hypotheses are removed from the data set
+
+    write.csv(DataSet, 'clean_data.csv')
+
+    # The model is constructed from the data not containing outliers
+    model <- lm(formula = Pris_Salg ~ Salgsaar +  KommuneNavn + 
+        Areal_Bolig + Salgsaar * Areal_Bolig + KommuneNavn * Areal_Bolig + 
+        Areal_Grund + Salgsaar * Areal_Grund + KommuneNavn * Areal_Grund +
+        Dist_skole + Salgsaar * Dist_skole + KommuneNavn * Dist_skole +
+        Dist_raadhus + Salgsaar * Dist_raadhus + KommuneNavn * Dist_raadhus +
+        Alder + Salgsaar * Alder + KommuneNavn * Alder +
+        AntalFremvisninger + Salgsaar * AntalFremvisninger + KommuneNavn  * AntalFremvisninger +
+        Areal_GarageCarport + Salgsaar * Areal_GarageCarport + KommuneNavn * Areal_GarageCarport +
+        Ejd_AntalPlan + Salgsaar * Ejd_AntalPlan + KommuneNavn * Ejd_AntalPlan +
+        Salgstid + Salgsaar * Salgstid + KommuneNavn * Salgstid, 
+        data = DataSet)
+    
+    summary <- summary(model)
 
     write.csv(summary$coefficients, 'linear_model_1.csv')
-
-    str(DataSet)
-    #return (summary)
+    return (summary)
 }
 
 main()
