@@ -9,13 +9,17 @@ BY <- function(data, ftest) {
             k <- i
         }
     }
+    if (m <= 10) {
+        print(paste('m = ', m))
+        print(data)
+    }
     if (ftest == FALSE) {
         data <- data[-(1:k),]
+        return (data)
     } else {
-        data <- data[1:k,] 
+        data <- data[1:k,]
+        return (data)
     }
-
-    return (data)
 }
 
 main <- function() {
@@ -119,48 +123,57 @@ main <- function() {
 
     n <- length(explanatory)
 
-    final_df <- data.frame(variable = c(), p_value = c())
+    p_values <- c()
+    for (j in 1:length(explanatory)) {
+        variable <- explanatory[j]
+        formula1 <- as.formula(
+            paste("Pris_Salg", paste(explanatory, collapse=' + '), sep=' ~ ')
+        )
+        formula2 <- as.formula(
+            paste("Pris_Salg", paste(explanatory[-j], collapse=' + '), sep=' ~ ')
+        )
 
-    for (i in 1:(n-1)) {
-        p_values <- c()
-        for (j in 1:length(explanatory)) {
-            variable <- explanatory[j]
-            formula1 <- as.formula(
-                paste("Pris_Salg", paste(explanatory, collapse=' + '), sep=' ~ ')
-            )
-            formula2 <- as.formula(
-                paste("Pris_Salg", paste(explanatory[-j], collapse=' + '), sep=' ~ ')
-            )
+        # Skal lige have fjernet outliers her
+        model1 <- lm(formula=formula1, data=DataSet)
+        model2 <- lm(formula=formula2, data=DataSet)
 
-            # Skal lige have fjernet outliers her
-            model1 <- lm(formula=formula1, data=DataSet)
-            model2 <- lm(formula=formula2, data=DataSet)
-
-            p_value <- anova(model1, model2, test='F')$'Pr(>F)'[2]
-            p_values[j] <- p_value
+        if (grepl(":", variable) | variable == "Salgsaar" | variable == "KommuneNavn") {
+            p_value <- anova(model2, model1, test='F')$'Pr(>F)'[2]
+        } else {
+            p_value <- summary(model1)$coefficients[variable, "Pr(>|t|)"]
         }
-        
-        current_df <- data.frame(variable = explanatory, p_value = p_values) %>%
-            arrange(desc(p_value))
-
-        final_df[i, 1:2] <-  current_df[1, 1:2]
-
-
-        explanatory <- explanatory[! explanatory == current_df[1, 1]]
-        
-        # Bare lige så man kan følge med i hvor langt den er
-        progress <- (n * (n + 1) - (n-i) * (n-i + 1))/((n * (n + 1)) - 1)
-        print(paste('Progress: ', progress))
+                       
+        p_values[j] <- p_value
     }
-    final_df <- final_df %>% arrange(p_value)
-    # Benjamini-Yekutieli procedure
-    final_df <- BY(final_df, TRUE)
+        
+    df <- data.frame(variable = explanatory, p_value = p_values) %>%
+        arrange(p_value)
+
+    updated_df <- BY(df, TRUE)
+
+    # Exclude interaction terms where main effects are insignificant
+    final_variables <- c()
+    for (variable in updated_df$variable) {
+        if (! grepl(":", variable)) {
+            final_variables <- append(final_variables, variable)
+            next
+        }
+        main_variables <- strsplit(variable, ":")[[1]]
+        condition <- main_variables %in% updated_df$variable
+        if (condition[1] && condition[2]) {
+            final_variables <- append(final_variables, variable)
+        } else {
+            print(
+                paste(variable, " was discarded due to omitted main variable(s)")
+            )
+        }
+    }
+    print(updated_df$variable)
 
     # Make final model
-
     final_formula <- as.formula(
         paste(
-            paste("Pris_Salg", paste(final_df$variable, collapse=' + '), sep=' ~ ')
+            paste("Pris_Salg", paste(final_variables, collapse=' + '), sep=' ~ ')
         )
     )
     final_model <- lm(formula=final_formula, data=DataSet)
