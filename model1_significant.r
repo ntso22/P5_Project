@@ -1,3 +1,4 @@
+# Benjamini-Yekutieli procedure
 BY <- function(data, ftest) {
     m <- nrow(data)
     alpha <- .05
@@ -58,6 +59,7 @@ main <- function() {
         subset(KommuneNavn %in% cities) %>%
         select(-KommuneNavn)
 
+    # Creating initial model
     model <- lm(formula = Pris_Salg ~ Salgsaar + 
         Areal_Bolig + Salgsaar * Areal_Bolig + 
         Areal_Grund + Salgsaar * Areal_Grund + 
@@ -74,7 +76,7 @@ main <- function() {
 
     H_diag <- influence(model)$hat
 
-    #Standardising residuals and adding to data frame
+    # Standardising residuals and adding to data frame
     p_values <- 2 * (1 - pnorm(abs(model$residuals / (summary$sigma * sqrt(1 - H_diag))))) # Remember the definition of standardised residuals
     DataSet <- DataSet %>% mutate(p_value = p_values) %>%
         arrange(p_value)
@@ -96,6 +98,7 @@ main <- function() {
         Salgstid + Salgsaar * Salgstid, 
         data = DataSet)
 
+    # Quantitative and qualitative variables are defined, such that the correct interaction terms can also be defined
     quantitative <- c(
         "Areal_Bolig",
         "Areal_Grund",
@@ -123,6 +126,7 @@ main <- function() {
 
     n <- length(explanatory)
 
+    # Each null hypothesis is evaluated.
     p_values <- c()
     for (j in 1:length(explanatory)) {
         variable <- explanatory[j]
@@ -145,7 +149,8 @@ main <- function() {
                        
         p_values[j] <- p_value
     }
-        
+
+    # Using Benjamini Yekutieli procedure to determine significance of null hypotheses
     df <- data.frame(variable = explanatory, p_value = p_values) %>%
         arrange(p_value)
 
