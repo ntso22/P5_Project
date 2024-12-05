@@ -173,7 +173,6 @@ main <- function() {
             )
         }
     }
-    print(updated_df$variable)
 
     # Make final model
     final_formula <- as.formula(
