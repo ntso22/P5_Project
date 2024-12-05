@@ -126,22 +126,23 @@ main <- function() {
 
     n <- length(explanatory)
 
-    # Evaluating null hypotheses
+    # Each null hypothesis is evaluated.
     p_values <- c()
-    for (j in 1:length(explanatory)) {
-        variable <- explanatory[j]
-        formula1 <- as.formula(
+
+    control_formula <- as.formula(
             paste("Pris_Salg", paste(explanatory, collapse=' + '), sep=' ~ ')
-        )
-        formula2 <- as.formula(
-            paste("Pris_Salg", paste(explanatory[-j], collapse=' + '), sep=' ~ ')
-        )
+    )
+    model1 <- lm(formula=control_formula, data=DataSet)
 
-        # Skal lige have fjernet outliers her
-        model1 <- lm(formula=formula1, data=DataSet)
-        model2 <- lm(formula=formula2, data=DataSet)
-
+    for (j in 1:n) {
+        variable <- explanatory[j]
+        
         if (grepl(":", variable) | variable == "Salgsaar" | variable == "KommuneNavn") {
+            formula <- as.formula(
+                paste("Pris_Salg", paste(explanatory[-j], collapse=' + '), sep=' ~ ')
+            )
+            model2 <- lm(formula=formula, data=DataSet)
+
             p_value <- anova(model2, model1, test='F')$'Pr(>F)'[2]
         } else {
             p_value <- summary(model1)$coefficients[variable, "Pr(>|t|)"]
@@ -150,11 +151,17 @@ main <- function() {
         p_values[j] <- p_value
     }
 
+    # Including iteration that tests the significance of the intercept
+    p_values[n+1] <- summary(model1)$coefficients["(Intercept)", "Pr(>|t|)"]
+    explanatory <- append(explanatory, "(Intercept)")
+
     # Using Benjamini Yekutieli procedure to determine significance of null hypotheses
     df <- data.frame(variable = explanatory, p_value = p_values) %>%
         arrange(p_value)
 
     updated_df <- BY(df, TRUE)
+
+    print(updated_df)
 
     # Exclude interaction terms where main effects are insignificant
     final_variables <- c()
@@ -175,12 +182,15 @@ main <- function() {
     }
 
     # Make final model
-    final_formula <- as.formula(
-        paste(
-            paste("Pris_Salg", paste(final_variables, collapse=' + '), sep=' ~ ')
-        )
+    final_formula <- paste(
+            paste("Pris_Salg", paste(final_variables[! final_variables == "(Intercept)"], collapse=' + '), sep=' ~ ')
     )
-    final_model <- lm(formula=final_formula, data=DataSet)
+
+    if (! "(Intercept)" %in% final_variables) {
+        final_formula <- paste(final_formula_string, "-1")
+    }
+    
+    final_model <- lm(formula=as.formula(final_formula), data=DataSet)
     return(summary(final_model))
 }
 main()
