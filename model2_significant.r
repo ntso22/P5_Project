@@ -54,7 +54,7 @@ main <- function() {
     DataSet <- homedata %>%
         select(vars) %>%
         na.omit() %>%
-        mutate(Salgsaar = as.character(Salgsaar)) %>%
+        mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
         subset(KommuneNavn %in% cities)
 
     model <- lm(formula = Pris_Salg ~ Salgsaar +  KommuneNavn + 
