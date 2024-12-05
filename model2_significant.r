@@ -1,3 +1,4 @@
+# Benjamini Yekutieli procedure
 BY <- function(data, ftest) {
     m <- nrow(data)
     alpha <- .05
@@ -57,6 +58,7 @@ main <- function() {
         mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
         subset(KommuneNavn %in% cities)
 
+    # Creating initial model
     model <- lm(formula = Pris_Salg ~ Salgsaar +  KommuneNavn + 
         Areal_Bolig + Salgsaar * Areal_Bolig + KommuneNavn * Areal_Bolig + 
         Areal_Grund + Salgsaar * Areal_Grund + KommuneNavn * Areal_Grund +
@@ -95,6 +97,7 @@ main <- function() {
         Salgstid + Salgsaar * Salgstid + KommuneNavn * Salgstid, 
         data = DataSet)
 
+    # Quantitative and qualitative variables are defined, such that the correct interaction terms can also be defined
     quantitative <- c(
         "Areal_Bolig",
         "Areal_Grund",
@@ -123,6 +126,7 @@ main <- function() {
 
     n <- length(explanatory)
 
+    # Evaluating null hypotheses
     p_values <- c()
     for (j in 1:length(explanatory)) {
         variable <- explanatory[j]
@@ -145,7 +149,8 @@ main <- function() {
                        
         p_values[j] <- p_value
     }
-        
+
+    # Using Benjamini Yekutieli procedure to determine significance of null hypotheses
     df <- data.frame(variable = explanatory, p_value = p_values) %>%
         arrange(p_value)
 
@@ -168,7 +173,6 @@ main <- function() {
             )
         }
     }
-    print(updated_df$variable)
 
     # Make final model
     final_formula <- as.formula(
