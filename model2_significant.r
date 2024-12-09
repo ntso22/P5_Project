@@ -80,7 +80,7 @@ main <- function() {
     DataSet <- DataSet %>% mutate(p_value = p_values) %>%
         arrange(p_value)
    
-    DataSet <- BY(DataSet, FALSE)
+    DataSet <- BY(DataSet, FALSE) %>% arrange(Salgsaar)
 
     write.csv(DataSet, 'clean_data2.csv')
 
