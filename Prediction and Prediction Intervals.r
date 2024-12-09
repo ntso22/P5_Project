@@ -24,6 +24,8 @@ BY <- function(data, ftest) {
 
 main <- function() {
   library(dplyr)
+
+  load('HomeData.rda')
   
   vars <- c(
     "Pris_Salg",
@@ -182,56 +184,44 @@ x = main() #Take the linear regression model
 #Defining new variables that needs to be predicted and determine the 95% prediction intervals
 hus_1_2015_obs = data.frame(
   "Areal_Bolig" = 175,
-  "Dist_raadhus" = 5.122382,
-  "Salgstid" = 61,
   "Salgsaar" = as.factor(2015),
-  "Alder" = 6,
   "KommuneNavn" = "Aalborg",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0
 )
 hus_1_2018_obs = data.frame(
   "Areal_Bolig" = 175,
-  "Dist_raadhus" = 5.122382,
-  "Salgstid" = 285,
   "Salgsaar" = as.factor(2018),
-  "Alder" = 9,
   "KommuneNavn" = "Aalborg",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0
 )
 hus_1_2020_obs = data.frame(
   "Areal_Bolig" = 175,
-  "Dist_raadhus" = 5.122382,
-  "Salgstid" = 61,
   "Salgsaar" = as.factor(2020),
-  "Alder" = 11,
   "KommuneNavn" = "Aalborg",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0
 )
 hus_2_2014_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2014),
-  "Alder" = 138,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 
 hus_2_2017_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 31,
   "Salgsaar" = as.factor(2017),
-  "Alder" = 141,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 
 hus_2_2020_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 122,
   "Salgsaar" = as.factor(2020),
-  "Alder" = 144,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0
 )
 #Create a dataframe with all the new observed values
@@ -242,100 +232,76 @@ prediction_intervals = exp(predict(x, newdata = new_obs_DF, interval = "predicti
 #Create prediction intervals and plots for hus_2 troughout the period.
 hus_2_2011_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2011),
-  "Alder" = 135,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2012_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2012),
-  "Alder" = 136,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2013_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2013),
-  "Alder" = 137,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2014_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2014),
-  "Alder" = 138,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2015_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2015),
-  "Alder" = 139,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2016_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 243,
   "Salgsaar" = as.factor(2016),
-  "Alder" = 140,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2017_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 31,
   "Salgsaar" = as.factor(2017),
-  "Alder" = 141,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2018_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 31,
   "Salgsaar" = as.factor(2018),
-  "Alder" = 142,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2019_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 31,
   "Salgsaar" = as.factor(2019),
-  "Alder" = 143,
   "KommuneNavn" = "København",
+  "Ejd_AntalPlan" = 1,
   "StorGrund" = 0)
 hus_2_2020_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 122,
   "Salgsaar" = as.factor(2020),
-  "Alder" = 144,
+  "Ejd_AntalPlan" = 1,
   "KommuneNavn" = "København",
   "StorGrund" = 0
 )
 hus_2_2021_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 122,
   "Salgsaar" = as.factor(2021),
-  "Alder" = 145,
+  "Ejd_AntalPlan" = 1,
   "KommuneNavn" = "København",
   "StorGrund" = 0
 )
 hus_2_2022_obs = data.frame(
   "Areal_Bolig" = 80,
-  "Dist_raadhus" = 1.6,
-  "Salgstid" = 122,
+  "Ejd_AntalPlan" = 1,
   "Salgsaar" = as.factor(2022),
-  "Alder" = 146,
   "KommuneNavn" = "København",
   "StorGrund" = 0
 )
@@ -343,6 +309,7 @@ hus_2_2022_obs = data.frame(
 new_obs_DF = data.frame(rbind(hus_2_2011_obs,hus_2_2012_obs,hus_2_2013_obs,hus_2_2014_obs,hus_2_2015_obs,hus_2_2016_obs,hus_2_2017_obs,hus_2_2018_obs,hus_2_2019_obs,hus_2_2020_obs,hus_2_2021_obs,hus_2_2022_obs))
 #Predict the price and the 95% prediction intervals
 prediction_intervals = data.frame(exp(predict(x, newdata = new_obs_DF, interval = "prediction", level = 0.95)))
+
 
 library(ggplot2)
 
@@ -352,3 +319,4 @@ ggplot(prediction_intervals, aes(x = 1:nrow(prediction_intervals))) +
   geom_line(aes(y = upr), color = "blue") +    
   labs(x = "Index", y = "Value", title = "Plot of 'fit', 'lwr', and 'upr' Columns") +
   theme_minimal()
+
