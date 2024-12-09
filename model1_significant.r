@@ -53,12 +53,12 @@ main <- function() {
 
     # Cleaning data and treating Salgsaar as a qualitative variable, removing outliers using multiple hypothesis test
     DataSet <- homedata %>%
+        arange(Salgsaar) %>%
         select(vars) %>%
         na.omit() %>%
         mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
         subset(KommuneNavn %in% cities) %>%
-        select(-KommuneNavn) %>%
-        arrange(Salgsaar)
+        select(-KommuneNavn)
 
     # Creating initial model
     model <- lm(formula = Pris_Salg ~ Salgsaar + 
