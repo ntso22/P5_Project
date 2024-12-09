@@ -57,7 +57,8 @@ main <- function() {
         na.omit() %>%
         mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
         subset(KommuneNavn %in% cities) %>%
-        select(-KommuneNavn)
+        select(-KommuneNavn) %>%
+        arrange(Salgsaar)
 
     # Creating initial model
     model <- lm(formula = Pris_Salg ~ Salgsaar + 
