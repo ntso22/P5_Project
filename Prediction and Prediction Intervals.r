@@ -308,15 +308,17 @@ hus_2_2022_obs = data.frame(
 #Create a dataframe with all the new observed values
 new_obs_DF = data.frame(rbind(hus_2_2011_obs,hus_2_2012_obs,hus_2_2013_obs,hus_2_2014_obs,hus_2_2015_obs,hus_2_2016_obs,hus_2_2017_obs,hus_2_2018_obs,hus_2_2019_obs,hus_2_2020_obs,hus_2_2021_obs,hus_2_2022_obs))
 #Predict the price and the 95% prediction intervals
-prediction_intervals = data.frame(exp(predict(x, newdata = new_obs_DF, interval = "prediction", level = 0.95)))
-
+prediction_intervals = data.frame(Index = rbind(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022),
+                                  exp(predict(x, newdata = new_obs_DF, interval = "prediction", level = 0.95)))
+actual_price = data.frame(Index = rbind(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022),
+                          Price = rbind(NA,NA,NA,2680000,NA,NA,4795000,NA,NA,4375000,NA,NA))
 
 library(ggplot2)
 
-ggplot(prediction_intervals, aes(x = 1:nrow(prediction_intervals))) +
-  geom_point(aes(y = fit), color = "black") +  
-  geom_line(aes(y = lwr), color = "red") +  
-  geom_line(aes(y = upr), color = "blue") +    
-  labs(x = "Index", y = "Value", title = "Plot of 'fit', 'lwr', and 'upr' Columns") +
+ggplot(prediction_intervals, aes(x = Index)) +
+  geom_line(aes(y = lwr), color = "red") +    # Lower prediction interval
+  geom_line(aes(y = upr), color = "blue") +   # Upper prediction interval
+  geom_point(data = actual_price, aes(x = Index, y = Price), color = "green") +  # Actual prices
+  labs(x = "Index", y = "Value", title = "Plot of Predicted Values and Actual Prices" ) +
+  scale_x_continuous(breaks = seq(2011, 2022, by = 1)) +
   theme_minimal()
-
