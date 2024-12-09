@@ -53,7 +53,7 @@ main <- function() {
 
     # Cleaning data and treating Salgsaar as a qualitative variable, removing outliers using multiple hypothesis test
     DataSet <- homedata %>%
-        arange(Salgsaar) %>%
+        arrange(Salgsaar) %>%
         select(vars) %>%
         na.omit() %>%
         mutate(Salgsaar = as.character(Salgsaar), Pris_Salg = log(Pris_Salg)) %>%
